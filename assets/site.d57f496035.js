@@ -32,33 +32,6 @@
   window.matchMedia("(min-width: 960px)").addEventListener("change", (e) => e.matches && setMenu(false));
   menu?.addEventListener("click", (e) => e.target.closest("a") && setMenu(false));
 
-  /* Service list: image preview that follows the pointer (fine pointers only). */
-  const list = d.querySelector("[data-svc-list]");
-  const preview = d.querySelector("[data-svc-preview]");
-  if (list && preview && window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 960px)").matches) {
-    const pimg = preview.querySelector("img");
-    let x = 0, y = 0, tx = 0, ty = 0, raf = 0;
-    const loop = () => {
-      x += (tx - x) * 0.18;
-      y += (ty - y) * 0.18;
-      preview.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
-      raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.5 ? requestAnimationFrame(loop) : 0;
-    };
-    list.querySelectorAll(".svc-row").forEach((row) => {
-      new Image().src = row.dataset.preview; // warm the cache
-      row.addEventListener("pointerenter", () => {
-        if (pimg.getAttribute("src") !== row.dataset.preview) pimg.src = row.dataset.preview;
-        preview.classList.add("is-on");
-      });
-    });
-    list.addEventListener("pointermove", (e) => {
-      tx = e.clientX + 170;
-      ty = e.clientY;
-      if (!raf) raf = requestAnimationFrame(loop);
-    });
-    list.addEventListener("pointerleave", () => preview.classList.remove("is-on"));
-  }
-
   /* Gallery lightbox on <dialog> */
   const dlg = d.querySelector("[data-lightbox]");
   const items = [...d.querySelectorAll("[data-lb-src]")];
